@@ -1,8 +1,7 @@
 package com.example.weatherapp.di
 
-import CityNameApi
-import WeatherApi
-import com.example.weatherapp.data.service.ServiceConstants
+import com.example.weatherapp.data.service.CityNameServiceConstants
+import com.example.weatherapp.data.service.WeatherServiceConstants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -13,6 +12,7 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -36,23 +36,23 @@ class RetrofitModule {
         return client.build()
     }
 
-    @WeatherApi
-    @Provides
     @Singleton
+    @Provides
+    @Named("Weather")
     fun provideRetrofitWeatherApi(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(ServiceConstants.WEATHER_API_URL)
+            .baseUrl(WeatherServiceConstants.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
 
-    @CityNameApi
     @Provides
     @Singleton
+    @Named("CityName")
     fun provideRetrofitCityNameApi(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(ServiceConstants.CITY_NAME_API_URL)
+            .baseUrl(CityNameServiceConstants.BASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

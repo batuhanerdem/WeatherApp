@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.hiltAndroid)
-    alias(libs.plugins.kapt)
+    alias(libs.plugins.kotlinAndroidKsp)
     alias(libs.plugins.kotlin.serialization)
 }
 
@@ -71,11 +71,13 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.gson)
     implementation(libs.okhttp.profiler)
     implementation(libs.coil)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.lifecycle.runtime.compose.android)
+    implementation(libs.hilt.navigation)
+
 }
