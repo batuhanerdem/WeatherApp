@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.weatherapp.domain.repository.CityNameRepository
 import com.example.weatherapp.domain.repository.WeatherRepository
+import com.example.weatherapp.utils.SUCCESS
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -19,13 +20,13 @@ class MainActivityViewModel @Inject constructor(
         viewModelScope.launch {
             weatherRepository.getWeatherByName("sivas").collect {
                 it.data?.let {
-                    Log.d("success", "weat: ${it}")
+                    Log.d(SUCCESS, "weat: ${it}")
                 }
             }
             cityNameRepository.getCityByName("sivas").collect {
-//                Log.d("success", "city: $it ")
+//                Log.d(SUCCESS, "city: $it ")
 //                it.data?.let {
-//                    Log.d("success", ": $it")
+//                    Log.d(SUCCESS, ": $it")
 //                }
             }
         }
