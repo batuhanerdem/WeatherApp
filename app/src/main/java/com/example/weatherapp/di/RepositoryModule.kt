@@ -16,12 +16,12 @@ import javax.inject.Named
 @InstallIn(ViewModelComponent::class)
 class RepositoryModule {
 
-    @Named("CityName")
+    @CityNameApi
     @Provides
     fun provideCityNameRepository(service: CityNameService): CityNameRepository =
         CityNameRepositoryImpl(service)
 
-    @Named("Weather")
+    @WeatherApi
     @Provides
     fun provideWeatherRepository(service: WeatherService): WeatherRepository =
         WeatherRepositoryImpl(service)

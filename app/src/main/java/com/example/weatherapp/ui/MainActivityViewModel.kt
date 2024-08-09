@@ -3,18 +3,19 @@ package com.example.weatherapp.ui
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.weatherapp.di.CityNameApi
+import com.example.weatherapp.di.WeatherApi
 import com.example.weatherapp.domain.repository.CityNameRepository
 import com.example.weatherapp.domain.repository.WeatherRepository
 import com.example.weatherapp.utils.SUCCESS
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import javax.inject.Named
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    @Named("Weather") private val weatherRepository: WeatherRepository,
-    @Named("CityName") private val cityNameRepository: CityNameRepository
+    @WeatherApi private val weatherRepository: WeatherRepository,
+    @CityNameApi private val cityNameRepository: CityNameRepository
 ) : ViewModel() {
     init {
         viewModelScope.launch {

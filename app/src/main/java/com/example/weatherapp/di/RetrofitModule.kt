@@ -12,7 +12,6 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -38,7 +37,7 @@ class RetrofitModule {
 
     @Singleton
     @Provides
-    @Named("Weather")
+    @WeatherApi
     fun provideRetrofitWeatherApi(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl(WeatherServiceConstants.BASE_URL)
@@ -49,7 +48,7 @@ class RetrofitModule {
 
     @Provides
     @Singleton
-    @Named("CityName")
+    @CityNameApi
     fun provideRetrofitCityNameApi(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl(CityNameServiceConstants.BASE_URL)

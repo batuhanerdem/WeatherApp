@@ -7,7 +7,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -16,13 +15,13 @@ class ServiceModule {
 
     @Singleton
     @Provides
-    fun provideWeatherService(@Named("Weather") retrofitWeatherApi: Retrofit): WeatherService {
+    fun provideWeatherService(@WeatherApi retrofitWeatherApi: Retrofit): WeatherService {
         return retrofitWeatherApi.create(WeatherService::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideCityNameService(@Named("CityName") retrofitCityNameApi: Retrofit): CityNameService {
+    fun provideCityNameService(@CityNameApi retrofitCityNameApi: Retrofit): CityNameService {
         return retrofitCityNameApi.create(CityNameService::class.java)
     }
 }

@@ -1,8 +1,14 @@
 package com.example.weatherapp.di
-//@Qualifier
-//@Retention(AnnotationRetention.BINARY)
-//annotation class WeatherApi
-//
-//@Qualifier
-//@Retention(AnnotationRetention.BINARY)
-//annotation class CityNameApi
+
+import javax.inject.Named
+import javax.inject.Qualifier
+
+@Named("Weather")
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class WeatherApi
+
+@Named("CityName")
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class CityNameApi
