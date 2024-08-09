@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.weatherapp.ui.common.DotFadingLoading
 import com.example.weatherapp.ui.search_component.SearchComponent
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,14 +40,14 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding),
                         contentAlignment = Alignment.TopCenter
                     ) {
-                        Text(
-                            text = "testing", fontWeight = FontWeight.Bold, fontSize = TextUnit(
-                                20f, TextUnitType.Sp
-                            ), modifier = Modifier
-                                .padding(100.dp)
-                                .align(Alignment.Center)
-                        )
-
+                        Column {
+                            Text(
+                                text = "testing", fontWeight = FontWeight.Bold, fontSize = TextUnit(
+                                    20f, TextUnitType.Sp
+                                ), modifier = Modifier.padding(100.dp)
+                            )
+                            DotFadingLoading(true)
+                        }
                         SearchComponent()
 
                     }
