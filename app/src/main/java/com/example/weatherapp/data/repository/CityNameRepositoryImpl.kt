@@ -26,7 +26,7 @@ class CityNameRepositoryImpl @Inject constructor(private val service: CityNameSe
     }
 
     private fun CityNameApiResponseItem.toCity(): City {
-        return City(this.name)
+        return City(this.name, this.country)
     }
 
 }
