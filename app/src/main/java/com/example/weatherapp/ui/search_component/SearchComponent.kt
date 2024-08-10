@@ -29,7 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.weatherapp.R
 import com.example.weatherapp.domain.model.City
-import com.example.weatherapp.ui.MainActivityViewModel
+import com.example.weatherapp.ui.home_screen.HomeScreenViewModel
 import com.example.weatherapp.ui.search_component.city_item.CityItem
 import com.example.weatherapp.ui.theme.Background
 import com.example.weatherapp.ui.theme.SearchBackground
@@ -37,7 +37,7 @@ import com.example.weatherapp.ui.theme.SearchBackground
 @Composable
 fun SearchComponent(modifier: Modifier = Modifier) {
     val viewModel: SearchViewModel = hiltViewModel()
-    val mainActivityViewModel: MainActivityViewModel = hiltViewModel()
+    val mainActivityViewModel: HomeScreenViewModel = hiltViewModel()
     val focusManager = LocalFocusManager.current
 
     val loadingState = viewModel.dataClass.loadingState.collectAsStateWithLifecycle()

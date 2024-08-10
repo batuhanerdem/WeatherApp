@@ -1,4 +1,4 @@
-package com.example.weatherapp.ui
+package com.example.weatherapp.ui.home_screen
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -10,10 +10,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class MainActivityViewModel @Inject constructor(
+
+class HomeScreenViewModel @Inject constructor(
     private val weatherRepository: WeatherRepository
+
 ) : ViewModel() {
-    val dataClass = MainActivityDataClass()
+    val dataClass = HomeScreenDataClass()
 
     init {
         dataClass.loadingState.value = dataClass.city.value == null
@@ -33,4 +35,5 @@ class MainActivityViewModel @Inject constructor(
         }
 
     }
+
 }
