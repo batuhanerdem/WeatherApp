@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.progressSemantics
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -56,14 +55,15 @@ fun DotFadingLoading(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .progressSemantics(),
-//            .size(),
+            .background(Color.White),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
         Row(
-            modifier = modifier, horizontalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             repeat(dotNumber) { index ->
                 val animatedIndex = (progress * dotNumber).toInt() % dotNumber
@@ -81,6 +81,7 @@ fun DotFadingLoading(
                     modifier = Modifier
                         .border(1.dp, Color.Black, shape = CircleShape)
                         .size(15.dp)
+                        .align(Alignment.CenterVertically)
                         .background(color, shape = CircleShape)
                 )
             }
