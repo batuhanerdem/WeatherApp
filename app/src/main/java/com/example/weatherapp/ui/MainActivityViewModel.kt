@@ -1,31 +1,36 @@
 package com.example.weatherapp.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.weatherapp.domain.repository.CityNameRepository
 import com.example.weatherapp.domain.repository.WeatherRepository
+import com.example.weatherapp.utils.SUCCESS
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    private val weatherRepository: WeatherRepository,
-    private val cityNameRepository: CityNameRepository
+    private val weatherRepository: WeatherRepository
 ) : ViewModel() {
+    val dataClass = MainActivityDataClass()
+
     init {
+        dataClass.loadingState.value = dataClass.city.value == null
+    }
+
+    fun getWeather() {
+        val cityName = dataClass.city.value?.name ?: return //handle error
+        dataClass.loadingState.value = true
         viewModelScope.launch {
-//            weatherRepository.getWeatherByName("sivas").collect {
-//                it.data?.let {
-//                    Log.d(SUCCESS, "weat: ${it}")
-//                }
-//            }
-//            cityNameRepository.getCityByName("sivas").collect {
-//                Log.d(SUCCESS, "city: $it ")
-//                it.data?.let {
-//                    Log.d(SUCCESS, "city: $it")
-//                }
-//            }
+            weatherRepository.getWeatherByName(cityName).collect { it ->
+                dataClass.loadingState.value = false
+                it.data?.let {
+                    Log.d(SUCCESS, "weat: $it")
+                    dataClass.weather.value = it
+                }
+            }
         }
+
     }
 }

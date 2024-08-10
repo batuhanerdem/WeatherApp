@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.weatherapp.R
 import com.example.weatherapp.domain.model.City
+import com.example.weatherapp.ui.MainActivityViewModel
 import com.example.weatherapp.ui.search_component.city_item.CityItem
 import com.example.weatherapp.ui.theme.Background
 import com.example.weatherapp.ui.theme.SearchBackground
@@ -35,6 +37,8 @@ import com.example.weatherapp.ui.theme.SearchBackground
 @Composable
 fun SearchComponent(modifier: Modifier = Modifier) {
     val viewModel: SearchViewModel = hiltViewModel()
+    val mainActivityViewModel: MainActivityViewModel = hiltViewModel()
+    val focusManager = LocalFocusManager.current
 
     val loadingState = viewModel.dataClass.loadingState.collectAsStateWithLifecycle()
     val errorState = viewModel.dataClass.errorState.collectAsStateWithLifecycle()
@@ -90,7 +94,14 @@ fun SearchComponent(modifier: Modifier = Modifier) {
 
         }
         city.value?.let {
-            CityItem(city = it, modifier = Modifier.padding(top = 20.dp))
+            CityItem(city = it, modifier = Modifier
+                .padding(top = 20.dp)
+                .clickable {
+                    mainActivityViewModel.dataClass.city.value = it
+                    viewModel.setCityNull()
+                    textState = TextFieldValue("")
+                    focusManager.clearFocus()
+                })
         }
     }
 
