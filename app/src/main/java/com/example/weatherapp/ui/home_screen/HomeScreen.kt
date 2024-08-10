@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,6 +23,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.weatherapp.domain.model.City
 import com.example.weatherapp.domain.model.Weather
 import com.example.weatherapp.ui.common.DotFadingLoading
+import com.example.weatherapp.ui.common.SnackBar
 import com.example.weatherapp.ui.search_component.SearchComponent
 
 @Composable
@@ -33,8 +36,14 @@ fun HomeScreen(modifier: Modifier = Modifier) {
     val cityState = viewModel.dataClass.city.collectAsStateWithLifecycle()
     val weatherState = viewModel.dataClass.weather.collectAsStateWithLifecycle()
 
+    val snackBarHostState = remember { SnackbarHostState() }
+
     LaunchedEffect(key1 = cityState.value) {
         viewModel.getWeather()
+    }
+    LaunchedEffect(key1 = errorState.value) {
+        if (errorState.value == "") return@LaunchedEffect
+        snackBarHostState.showSnackbar(errorState.value)
     }
 
     Box(
@@ -54,14 +63,19 @@ fun HomeScreen(modifier: Modifier = Modifier) {
                 fontSize = TextUnit(21f, TextUnitType.Sp),
                 color = Color.Black
             )
+            //set search component height as float
+            //put a spacer at the top of the column
 
         }
         DotFadingLoading(
             isLoading = loadingState.value,
         )
         SearchComponent()
-
-
+        SnackBar(
+            snackBarHostState = snackBarHostState,
+            text = errorState.value,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
     }
 }
 
