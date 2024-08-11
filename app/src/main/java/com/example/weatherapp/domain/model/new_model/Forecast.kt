@@ -1,0 +1,5 @@
+package com.example.weatherapp.domain.model.new_model
+
+data class Forecast(
+    val forecastday: List<Forecastday>
+)
