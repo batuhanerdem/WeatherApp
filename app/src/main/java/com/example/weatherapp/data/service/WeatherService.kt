@@ -1,25 +1,23 @@
 package com.example.weatherapp.data.service
 
-import com.example.weatherapp.domain.model.WeatherApiResponse
+import com.example.weatherapp.domain.model.weather.WeatherDto
 import retrofit2.Response
 import retrofit2.http.GET
-import retrofit2.http.Headers
 import retrofit2.http.Query
 
 
 interface WeatherService {
-    @Headers(Constants.CONTENT_TYPE, Constants.AUTHORIZATION)
-    @GET(Constants.ENDPOINT_GET_WEATHER)
+    @GET(Constants.ENDPOINT_FORECAST)
     suspend fun getWeatherByCity(
-        @Query(Constants.QUERY_DATA_CITY) cityName: String,
-        @Query(Constants.QUERY_DATA_LANG) languageCode: String = "tr",
-    ): Response<WeatherApiResponse>
+        @Query(Constants.QUERY_CITY) cityName: String,
+        @Query(Constants.QUERY_DAYS) days: Int = 5,
+        @Query(Constants.QUERY_API_KEY) apiKey: String = ApiKeys.WEATHER
+    ): Response<WeatherDto>
 
     private object Constants {
-        const val CONTENT_TYPE = "content-type: application/json"
-        const val AUTHORIZATION = "authorization: ${ApiKeys.WEATHER}"
-        const val ENDPOINT_GET_WEATHER = "weather/getWeather"
-        const val QUERY_DATA_LANG = "data.lang"
-        const val QUERY_DATA_CITY = "data.city"
+        const val ENDPOINT_FORECAST = "forecast.json"
+        const val QUERY_CITY = "q"
+        const val QUERY_DAYS = "days"
+        const val QUERY_API_KEY = "key"
     }
 }

@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.weatherapp.domain.model.City
-import com.example.weatherapp.domain.model.Weather
+import com.example.weatherapp.domain.model.weather.WeatherCurrent
 import com.example.weatherapp.ui.common.DotFadingLoading
 import com.example.weatherapp.ui.common.SnackBar
 import com.example.weatherapp.ui.search_component.SearchComponent
@@ -80,7 +80,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
 }
 
 @Composable
-fun CityWeatherInfo(modifier: Modifier = Modifier, weather: Weather, city: City) {
+fun CityWeatherInfo(modifier: Modifier = Modifier, weather: WeatherCurrent, city: City) {
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -103,7 +103,7 @@ fun CityWeatherInfo(modifier: Modifier = Modifier, weather: Weather, city: City)
         Spacer(modifier = Modifier.padding(vertical = 18.dp))
 
         Text(
-            text = "${weather.degree}°",
+            text = "${weather.temperature}°",
             fontWeight = FontWeight.Bold,
             fontSize = TextUnit(25f, TextUnitType.Sp),
             color = Color.Black
@@ -111,7 +111,7 @@ fun CityWeatherInfo(modifier: Modifier = Modifier, weather: Weather, city: City)
         Spacer(modifier = Modifier.padding(vertical = 15.dp))
 
         Text(
-            text = weather.status,
+            text = weather.condition,
             fontWeight = FontWeight.Bold,
             fontSize = TextUnit(22f, TextUnitType.Sp),
             color = Color.Black
@@ -119,7 +119,7 @@ fun CityWeatherInfo(modifier: Modifier = Modifier, weather: Weather, city: City)
         Spacer(modifier = Modifier.padding(vertical = 25.dp))
 
         Text(
-            text = "H:${weather.max}° L:${weather.min}°",
+            text = "H:${weather.weatherDescription}° L:${weather.feelsLike}°",
             fontWeight = FontWeight.Normal,
             fontSize = TextUnit(22f, TextUnitType.Sp),
             color = Color.Black

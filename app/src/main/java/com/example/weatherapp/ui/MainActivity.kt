@@ -50,7 +50,6 @@ fun GreetingPreview() {
             modifier = Modifier.padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-//            SearchComponent()
             SearchComponent()
 
             Box(

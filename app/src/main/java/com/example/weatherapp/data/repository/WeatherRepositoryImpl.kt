@@ -1,9 +1,11 @@
 package com.example.weatherapp.data.repository
 
+import android.util.Log
 import com.example.weatherapp.data.service.WeatherService
-import com.example.weatherapp.domain.model.Result
-import com.example.weatherapp.domain.model.Weather
+import com.example.weatherapp.domain.model.weather.Current
+import com.example.weatherapp.domain.model.weather.WeatherCurrent
 import com.example.weatherapp.domain.repository.WeatherRepository
+import com.example.weatherapp.utils.ERROR
 import com.example.weatherapp.utils.Resource
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.Flow
@@ -14,28 +16,34 @@ import javax.inject.Inject
 class WeatherRepositoryImpl @Inject constructor(private val service: WeatherService) :
     WeatherRepository {
 
-    override fun getWeatherByName(name: String): Flow<Resource<Weather>> = flow {
+    override fun getWeatherByName(name: String): Flow<Resource<WeatherCurrent>> = flow {
         try {
             val resultList = service.getWeatherByCity(name)
-            val singleResult = resultList.body()!!.result[0]
-            val weather = singleResult.toWeather()
-            emit(Resource.Success(weather))
+            Log.d(ERROR, "getWeatherByName: $resultList ")
+            val weatherCurrent = resultList.body()!!.current.toWeatherCurrent()
+
+            emit(Resource.Success(weatherCurrent))
         } catch (e: Exception) {
-            emit(Resource.Error(e.localizedMessage))
+            emit(Resource.Error("getWeatherByName${e.localizedMessage}"))
         }
     }
 
-    private fun Result.toWeather(): Weather {
-        return Weather(
-            date = this.date,
-            day = this.day,
-            degree = this.degree,
-            description = this.description,
-            humidity = this.humidity,
-            max = this.max,
-            min = this.min,
-            night = this.night,
-            status = this.status
+
+
+    private fun Current.toWeatherCurrent(): WeatherCurrent {
+        return WeatherCurrent(
+            condition = this.condition.text,
+            temperature = tempC,
+            feelsLike = feelslikeC,
+            weatherDescription = condition.text,
+            windSpeed = windKph,
+            humidity = humidity,
+            pressure = pressureMb,
+            visibility = visKm,
+            uvIndex = uv,
+            gustSpeed = gustKph
         )
     }
+
+
 }
