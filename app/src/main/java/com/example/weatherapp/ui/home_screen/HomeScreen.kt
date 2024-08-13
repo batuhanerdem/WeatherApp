@@ -9,13 +9,21 @@ import android.os.Build
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
@@ -33,10 +42,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.example.weatherapp.R
 import com.example.weatherapp.domain.model.weather.WeatherCurrent
 import com.example.weatherapp.ui.common.DotFadingLoading
 import com.example.weatherapp.ui.common.SnackBar
 import com.example.weatherapp.ui.search_component.SearchComponent
+import com.example.weatherapp.ui.theme.Background
+import com.example.weatherapp.ui.theme.SearchBackground
 import com.example.weatherapp.utils.ERROR
 import com.example.weatherapp.utils.SUCCESS
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -48,7 +60,6 @@ import java.util.Locale
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier, navController: NavController) {
     val locationClient = LocationServices.getFusedLocationProviderClient(LocalContext.current)
-
 
     val viewModel: HomeScreenViewModel = hiltViewModel()
 
@@ -65,8 +76,6 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavController) {
             } else {
                 //im not sure what to do
             }
-
-
         }
 
     LaunchedEffect(Unit) {
@@ -94,22 +103,8 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavController) {
             CityWeatherInfo(
                 weather = currentWeatherState, cityName = currentCityState
             )
-
-            Button(
-                onClick = { navController.navigate(Screens.ForecastScreen(viewModel.dataClass.forecast.value!!)) },
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            ) {
-
-            }
-
-            Text(
-                text = "5-day forecast",
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 21.sp,
-                color = Color.Black
-            )
-            //set search component height as float
-            //put a spacer at the top of the column
+            WeatherDetails(weatherState = currentWeatherState)
+            ButtonArea(buttonOnClick = { navController.navigate(Screens.ForecastScreen(viewModel.dataClass.forecast.value!!)) })
 
         }
         DotFadingLoading(
@@ -131,17 +126,12 @@ fun CityWeatherInfo(
     modifier: Modifier = Modifier, weather: WeatherCurrent, cityName: String
 ) {
     Column(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 25.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        Text(
-            text = "Weather",
-            fontWeight = FontWeight.SemiBold,
-            fontSize = TextUnit(21f, TextUnitType.Sp),
-            color = Color.Black
-        )
-        Spacer(modifier = Modifier.padding(vertical = 15.dp))
 
         Text(
             text = cityName,
@@ -152,7 +142,7 @@ fun CityWeatherInfo(
         Spacer(modifier = Modifier.padding(vertical = 18.dp))
 
         Text(
-            text = "${weather.temperature}°",
+            text = "${weather.temperature.toInt()}°",
             fontWeight = FontWeight.Bold,
             fontSize = TextUnit(25f, TextUnitType.Sp),
             color = Color.Black
@@ -165,15 +155,126 @@ fun CityWeatherInfo(
             fontSize = TextUnit(22f, TextUnitType.Sp),
             color = Color.Black
         )
-        Spacer(modifier = Modifier.padding(vertical = 25.dp))
+
+        Spacer(modifier = Modifier.padding(vertical = 15.dp))
 
         Text(
-            text = "H:${weather.weatherDescription}° L:${weather.feelsLike}°",
-            fontWeight = FontWeight.Normal,
+            text = "Today",
+            fontWeight = FontWeight.Bold,
             fontSize = TextUnit(22f, TextUnitType.Sp),
-            color = Color.Black
+            color = Color.Black,
+            modifier = Modifier.align(Alignment.Start)
         )
 
+    }
+}
+
+@Composable
+fun WeatherDetails(modifier: Modifier = Modifier, weatherState: WeatherCurrent) {
+    Column(modifier = Modifier) {
+        WeatherInfoItem(
+            resId = R.drawable.ic_wind,
+            staticString = "Wind",
+            dynamicString = "${weatherState.windSpeed}/kmh"
+        )
+        WeatherInfoItem(
+            resId = R.drawable.ic_humidity,
+            staticString = "Humidity",
+            dynamicString = "${weatherState.humidity}%"
+        )
+        WeatherInfoItem(
+            resId = R.drawable.ic_pressure,
+            staticString = "Pressure",
+            dynamicString = "${weatherState.pressure}in"
+        )
+        WeatherInfoItem(
+            resId = R.drawable.ic_visibility,
+            staticString = "Visibility",
+            dynamicString = "${weatherState.visibility}mi"
+        )
+        WeatherInfoItem(
+            resId = R.drawable.ic_uv_index,
+            staticString = "Uv Index",
+            dynamicString = "${weatherState.uvIndex} high"
+        )
+    }
+}
+
+
+@Composable
+fun WeatherInfoItem(
+    modifier: Modifier = Modifier, resId: Int, staticString: String, dynamicString: String
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 15.dp, horizontal = 25.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start
+    ) {
+        Box(
+            modifier = Modifier
+                .height(48.dp)
+                .width(48.dp)
+                .background(Background, RoundedCornerShape(15.dp))
+        ) {
+            Image(
+                painter = painterResource(id = resId),
+                contentDescription = "",
+                modifier = Modifier
+                    .height(24.dp)
+                    .width(24.dp)
+                    .align(Alignment.Center)
+            )
+        }
+
+        Spacer(modifier = Modifier.padding(10.dp))
+        Column(
+            modifier = Modifier,
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.Start
+        ) {
+            Text(
+                text = staticString,
+                fontSize = 19.sp,
+                color = Color.Black,
+                fontWeight = FontWeight.SemiBold
+            )
+            Text(text = dynamicString, fontSize = 17.sp, color = SearchBackground)
+        }
+    }
+}
+
+@Composable
+fun ButtonArea(modifier: Modifier = Modifier, buttonOnClick: () -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 25.dp),
+        verticalArrangement = Arrangement.Bottom,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Button(
+            onClick = { buttonOnClick() },
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .fillMaxWidth(),
+            colors = ButtonColors(
+                containerColor = Background,
+                contentColor = Color.Black,
+                disabledContentColor = Background,
+                disabledContainerColor = Color.Black
+            ),
+            shape = RoundedCornerShape(15.dp)
+        ) {
+            Text(
+                text = "5-Day Forecast",
+                fontWeight = FontWeight.SemiBold,
+                fontSize = TextUnit(17f, TextUnitType.Sp),
+                color = Color.Black,
+                modifier = Modifier.align(Alignment.CenterVertically)
+            )
+        }
     }
 }
 
