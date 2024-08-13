@@ -19,11 +19,9 @@ class WeatherRepositoryImpl @Inject constructor(private val service: WeatherServ
         try {
             val resultList = service.getWeatherByCity(name)
             Log.d(ERROR, "getWeatherByName: $resultList ")
-            emit(Resource.Success( resultList.body()!!))
+            emit(Resource.Success(resultList.body()!!))
         } catch (e: Exception) {
             emit(Resource.Error("getWeatherByName${e.localizedMessage}"))
         }
     }
-
-
 }
