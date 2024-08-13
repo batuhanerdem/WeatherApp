@@ -1,7 +1,9 @@
 package com.example.weatherapp.domain.model.weather
 
 import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Hour(
     @SerializedName("time_epoch") val timeEpoch: Long,
     @SerializedName("time") val time: String,

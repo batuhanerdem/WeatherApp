@@ -16,7 +16,11 @@ lifecycleRuntimeComposeAndroid = "2.8.4"
 coilVersion = "2.7.0"
 serialization = "1.6.3"
 hiltNavigationComposeVersion = "1.2.0"
-kspVersion = "1.9.0-1.0.13"
+kspVersion = "1.9.0-1.0.13" #compatible with 1.9.0 kotlin version
+locationVersion = "21.3.0"
+playServicesMaps = "19.0.0"
+composeNavigation = "2.8.0-beta06"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -43,6 +47,9 @@ androidx-lifecycle-runtime-compose-android = { group = "androidx.lifecycle", nam
 coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coilVersion" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationComposeVersion" }
+location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "locationVersion" }
+play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
+navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
 
 
 [plugins]
@@ -50,4 +57,4 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 hiltAndroid = { id = "com.google.dagger.hilt.android", version.ref = "hiltVersion" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-kotlinAndroidKsp = { id = "com.google.devtools.ksp", version.ref = "kspVersion" }# had problem with it
+kotlinAndroidKsp = { id = "com.google.devtools.ksp", version.ref = "kspVersion" }

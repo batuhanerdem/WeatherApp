@@ -1,5 +1,11 @@
 package com.example.weatherapp.ui.home_screen
 
+import android.Manifest
+import android.Manifest.permission.ACCESS_COARSE_LOCATION
+import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,25 +26,48 @@ import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.weatherapp.domain.model.City
+import androidx.navigation.NavController
 import com.example.weatherapp.domain.model.weather.WeatherCurrent
 import com.example.weatherapp.ui.common.DotFadingLoading
 import com.example.weatherapp.ui.common.SnackBar
 import com.example.weatherapp.ui.search_component.SearchComponent
+import com.example.weatherapp.utils.SUCCESS
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun HomeScreen(modifier: Modifier = Modifier, navController: NavController) {
+
+    val launcher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestMultiplePermissions()) { result ->
+            Log.d(SUCCESS, "HomeScreen: $result")
+            if (result[ACCESS_FINE_LOCATION] == true && result[ACCESS_COARSE_LOCATION] == true) {
+                // Fine location permission granted
+                Log.d(SUCCESS, "Fine location permission granted")
+                // Perform actions that require fine location permission
+            } else {
+
+            }
+
+
+        }
+
+    LaunchedEffect(Unit) {
+        launcher.launch(
+            arrayOf(
+                ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION
+            )
+        )
+    }
+
 
     val viewModel: HomeScreenViewModel = hiltViewModel()
 
     val loadingState = viewModel.dataClass.loadingState.collectAsStateWithLifecycle()
     val errorState = viewModel.dataClass.errorState.collectAsStateWithLifecycle()
-    val cityState = viewModel.dataClass.city.collectAsStateWithLifecycle()
+    val cityNameState = viewModel.dataClass.cityName.collectAsStateWithLifecycle()
     val weatherState = viewModel.dataClass.weather.collectAsStateWithLifecycle()
 
     val snackBarHostState = remember { SnackbarHostState() }
-
-    LaunchedEffect(key1 = cityState.value) {
+    LaunchedEffect(key1 = cityNameState.value) {
         viewModel.getWeather()
     }
     LaunchedEffect(key1 = errorState.value) {
@@ -52,9 +81,9 @@ fun HomeScreen(modifier: Modifier = Modifier) {
 
         Column(modifier = Modifier.padding(top = 100.dp)) {
             val currentWeatherState = weatherState.value ?: return@Column
-            val currentCityState = cityState.value ?: return@Column
+            val currentCityState = cityNameState.value ?: return@Column
             CityWeatherInfo(
-                weather = currentWeatherState, city = currentCityState
+                weather = currentWeatherState, cityName = currentCityState
             )
 
             Text(
@@ -77,10 +106,13 @@ fun HomeScreen(modifier: Modifier = Modifier) {
             modifier = Modifier.align(Alignment.BottomCenter)
         )
     }
+
 }
 
 @Composable
-fun CityWeatherInfo(modifier: Modifier = Modifier, weather: WeatherCurrent, city: City) {
+fun CityWeatherInfo(
+    modifier: Modifier = Modifier, weather: WeatherCurrent, cityName: String
+) {
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -95,7 +127,7 @@ fun CityWeatherInfo(modifier: Modifier = Modifier, weather: WeatherCurrent, city
         Spacer(modifier = Modifier.padding(vertical = 15.dp))
 
         Text(
-            text = city.name,
+            text = cityName,
             fontWeight = FontWeight.Bold,
             fontSize = TextUnit(25f, TextUnitType.Sp),
             color = Color.Black

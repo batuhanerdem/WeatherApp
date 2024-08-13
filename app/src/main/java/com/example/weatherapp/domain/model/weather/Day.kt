@@ -1,7 +1,9 @@
 package com.example.weatherapp.domain.model.weather
 
 import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Day(
     @SerializedName("maxtemp_c") val maxtempC: Double,
     @SerializedName("maxtemp_f") val maxtempF: Double,

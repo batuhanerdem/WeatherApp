@@ -10,19 +10,20 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-
 class HomeScreenViewModel @Inject constructor(
     private val weatherRepository: WeatherRepository
 
 ) : ViewModel() {
     val dataClass = HomeScreenDataClass()
 
+
     init {
-        dataClass.loadingState.value = dataClass.city.value == null
+        dataClass.loadingState.value = dataClass.cityName.value.isEmpty()
     }
 
     fun getWeather() {
-        val cityName = dataClass.city.value?.name ?: return //handle error
+        val cityName = dataClass.cityName.value
+        if (cityName.isEmpty()) return
         dataClass.loadingState.value = true
         viewModelScope.launch {
             weatherRepository.getWeatherByName(cityName).collect { it ->

@@ -97,7 +97,7 @@ fun SearchComponent(modifier: Modifier = Modifier) {
             CityItem(city = it, modifier = Modifier
                 .padding(top = 20.dp)
                 .clickable {
-                    mainActivityViewModel.dataClass.city.value = it
+                    mainActivityViewModel.dataClass.cityName.value = it.name
                     viewModel.setCityNull()
                     textState = TextFieldValue("")
                     focusManager.clearFocus()
