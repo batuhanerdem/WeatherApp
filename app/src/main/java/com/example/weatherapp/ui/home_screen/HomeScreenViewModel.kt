@@ -1,10 +1,9 @@
 package com.example.weatherapp.ui.home_screen
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.weatherapp.domain.mapper.WeatherMapper.toWeatherCurrent
 import com.example.weatherapp.domain.repository.WeatherRepository
-import com.example.weatherapp.utils.SUCCESS
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,13 +27,16 @@ class HomeScreenViewModel @Inject constructor(
         viewModelScope.launch {
             weatherRepository.getWeatherByName(cityName).collect { it ->
                 dataClass.loadingState.value = false
+
+                it.message?.let {
+                    dataClass.errorState.value = it
+                }
+
                 it.data?.let {
-                    Log.d(SUCCESS, "weat: $it")
-                    dataClass.weather.value = it
+                    dataClass.weather.value = it.current.toWeatherCurrent()
+                    dataClass.forecast.value = it.forecast
                 }
             }
         }
-
     }
-
 }

@@ -5,12 +5,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Forecastday(
-    @SerializedName("date")
-    val date: String,
-    @SerializedName("date_epoch")
-    val dateEpoch: Long,
-//    @SerializedName("day")
-//    val day: Day,
-//    @SerializedName("hour")
-//    val hour: List<Hour>
+    @SerializedName("date") val date: String,
+    @SerializedName("date_epoch") val dateEpoch: Long,
+    @SerializedName("day") val day: Day,
+    @SerializedName("hour") val hour: List<Hour>
 )

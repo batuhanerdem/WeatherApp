@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.navigation.compose.rememberNavController
+import com.example.weatherapp.ui.home_screen.HomeScreen
 import com.example.weatherapp.ui.search_component.SearchComponent
 import com.example.weatherapp.ui.theme.WeatherAppTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,7 +33,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             WeatherAppTheme {
                 val navHostController = rememberNavController()
-
                 Scaffold(
                     modifier = Modifier.fillMaxSize()
                 ) { innerPadding ->
