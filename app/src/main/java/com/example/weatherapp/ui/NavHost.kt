@@ -1,7 +1,6 @@
 package com.example.weatherapp.ui
 
 import Screens
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -9,9 +8,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import com.example.weatherapp.domain.model.weather.Forecast
+import com.example.weatherapp.ui.forecast_screen.ForecastScreen
 import com.example.weatherapp.ui.home_screen.HomeScreen
 import com.example.weatherapp.utils.CustomNavType
-import com.example.weatherapp.utils.SUCCESS
 import kotlin.reflect.typeOf
 
 @Composable
@@ -31,8 +30,7 @@ fun NavigationHost(navHostController: NavHostController, modifier: Modifier) {
             )
         ) {
             val args = it.toRoute<Screens.ForecastScreen>()
-            Log.d(SUCCESS, "NavigationHost: ${args.days}")
-            //(days = args.days)
+            ForecastScreen(navController = navHostController, forecast = args.days)
         }
 
     }
