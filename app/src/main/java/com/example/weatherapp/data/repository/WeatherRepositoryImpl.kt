@@ -4,8 +4,8 @@ import android.util.Log
 import com.example.weatherapp.data.service.WeatherService
 import com.example.weatherapp.domain.model.weather.WeatherDto
 import com.example.weatherapp.domain.repository.WeatherRepository
-import com.example.weatherapp.utils.ERROR
 import com.example.weatherapp.utils.Resource
+import com.example.weatherapp.utils.SUCCESS
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -18,7 +18,7 @@ class WeatherRepositoryImpl @Inject constructor(private val service: WeatherServ
     override fun getWeatherByName(name: String): Flow<Resource<WeatherDto>> = flow {
         try {
             val resultList = service.getWeatherByCity(name)
-            Log.d(ERROR, "getWeatherByName: $resultList ")
+            Log.d(SUCCESS, "getWeatherByName: $resultList ")
             emit(Resource.Success(resultList.body()!!))
         } catch (e: Exception) {
             emit(Resource.Error("getWeatherByName${e.localizedMessage}"))

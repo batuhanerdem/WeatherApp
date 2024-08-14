@@ -10,7 +10,7 @@ sealed class Resource<T>(val data: T? = null, val message: String? = null) {
         }
 
         init {
-            Log.d(ERROR, this.toString())
+            Log.e(ERROR, this.toString())
         }
     }
 }

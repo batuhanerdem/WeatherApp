@@ -288,10 +288,15 @@ private fun getLocation(
     locationClient.lastLocation.addOnSuccessListener { location ->
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             Log.d(SUCCESS, "testing: $location ")
-            coder.getFromLocation(location.latitude, location.longitude, 1) {
-                val resultName = it[0].adminArea
-                viewModel.dataClass.cityName.value = resultName
+            try {
+                coder.getFromLocation(location.latitude, location.longitude, 1) {
+                    val resultName = it[0].adminArea
+                    viewModel.dataClass.cityName.value = resultName
+                }
+            } catch (e: Exception) {
+                Log.e(ERROR, "getLocation: ${e.localizedMessage} ")
             }
+
         } else {
             try {
                 val result = coder.getFromLocation(location.latitude, location.longitude, 1)
@@ -299,12 +304,12 @@ private fun getLocation(
                     val resultName = result[0].adminArea
                     viewModel.dataClass.cityName.value = resultName
                 } else {
-                    Log.d(ERROR, "No geocoding results found")
+                    Log.e(ERROR, "No geocoding results found")
                 }
             } catch (e: IOException) {
                 Log.e(ERROR, "Geocoding failed ${e.localizedMessage}")
             } catch (e: Exception) {
-                Log.d(ERROR, "getLocation: ${e.localizedMessage}")
+                Log.e(ERROR, "getLocation: ${e.localizedMessage}")
             }
         }
     }
