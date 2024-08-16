@@ -20,7 +20,8 @@ kspVersion = "1.9.0-1.0.13" #compatible with 1.9.0 kotlin version
 locationVersion = "21.3.0"
 playServicesMaps = "19.0.0"
 composeNavigation = "2.8.0-beta06"
-
+navigationCommonKtx = "2.7.7"
+customNavTypeGenerator = "v1.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -50,7 +51,8 @@ hilt-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", v
 location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "locationVersion" }
 play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "composeNavigation" }
-
+androidx-navigation-common-ktx = { group = "androidx.navigation", name = "navigation-common-ktx", version.ref = "navigationCommonKtx" }
+custom-navtype-generator = { group = "com.github.batuhanerdem", name = "custom-navtype-generator", version.ref = "customNavTypeGenerator" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -58,3 +60,4 @@ jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = 
 hiltAndroid = { id = "com.google.dagger.hilt.android", version.ref = "hiltVersion" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlinAndroidKsp = { id = "com.google.devtools.ksp", version.ref = "kspVersion" }
+
