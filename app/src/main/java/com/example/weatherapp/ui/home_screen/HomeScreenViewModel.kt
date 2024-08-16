@@ -2,6 +2,7 @@ package com.example.weatherapp.ui.home_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.weatherapp.domain.mapper.WeatherMapper.toDayUi
 import com.example.weatherapp.domain.mapper.WeatherMapper.toWeatherCurrent
 import com.example.weatherapp.domain.repository.WeatherRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,7 +35,7 @@ class HomeScreenViewModel @Inject constructor(
 
                 it.data?.let {
                     dataClass.weather.value = it.current.toWeatherCurrent()
-                    dataClass.forecast.value = it.forecast
+                    dataClass.forecasts.value = it.forecast.toDayUi()
                 }
             }
         }

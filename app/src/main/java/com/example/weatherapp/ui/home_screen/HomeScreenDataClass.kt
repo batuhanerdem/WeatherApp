@@ -1,7 +1,6 @@
 package com.example.weatherapp.ui.home_screen
 
-import com.example.weatherapp.domain.model.weather.Forecast
-import com.example.weatherapp.domain.model.weather.Forecastday
+import com.example.weatherapp.domain.model.weather.DayUi
 import com.example.weatherapp.domain.model.weather.WeatherCurrent
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -10,5 +9,5 @@ data class HomeScreenDataClass(
     val errorState: MutableStateFlow<String> = MutableStateFlow(""),
     var cityName: MutableStateFlow<String> = MutableStateFlow(""),
     var weather: MutableStateFlow<WeatherCurrent?> = MutableStateFlow(null),
-    var forecast: MutableStateFlow<Forecast?> = MutableStateFlow(null)
+    var forecasts: MutableStateFlow<List<DayUi>> = MutableStateFlow(emptyList())
 )

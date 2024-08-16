@@ -1,4 +1,4 @@
-import com.example.weatherapp.domain.model.weather.Forecast
+import com.example.weatherapp.domain.model.weather.DayUi
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -8,6 +8,6 @@ sealed class Screens {
     data object Home : Screens()
 
     @Serializable
-    data class ForecastScreen(val days: Forecast) : Screens()
+    data class ForecastScreen(val days: List<DayUi>) : Screens()
 
 }

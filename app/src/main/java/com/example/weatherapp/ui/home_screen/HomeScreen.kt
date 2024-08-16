@@ -67,6 +67,7 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavController) {
     val errorState = viewModel.dataClass.errorState.collectAsStateWithLifecycle()
     val cityNameState = viewModel.dataClass.cityName.collectAsStateWithLifecycle()
     val weatherState = viewModel.dataClass.weather.collectAsStateWithLifecycle()
+    val forecastState = viewModel.dataClass.forecasts.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
 
     val launcher =
@@ -100,11 +101,18 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavController) {
         Column(modifier = Modifier.padding(top = 100.dp)) {
             val currentWeatherState = weatherState.value ?: return@Column
             val currentCityState = cityNameState.value
+            if (forecastState.value.isEmpty()) return@Column
             CityWeatherInfo(
                 weather = currentWeatherState, cityName = currentCityState
             )
             WeatherDetails(weatherState = currentWeatherState)
-            ButtonArea(buttonOnClick = { navController.navigate(Screens.ForecastScreen(viewModel.dataClass.forecast.value!!)) })
+            ButtonArea(buttonOnClick = {
+                navController.navigate(
+                    Screens.ForecastScreen(
+                        forecastState.value
+                    )
+                )
+            })
 
         }
         DotFadingLoading(
@@ -284,11 +292,12 @@ private fun getLocation(
     locationClient: FusedLocationProviderClient,
     viewModel: HomeScreenViewModel
 ) {
+    if(viewModel.dataClass.cityName.value.isNotEmpty()) return
     val coder = Geocoder(navController.context, Locale.getDefault())
     locationClient.lastLocation.addOnSuccessListener { location ->
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             Log.d(SUCCESS, "testing: $location ")
-            try {
+            try {// can get crash for some reason
                 coder.getFromLocation(location.latitude, location.longitude, 1) {
                     val resultName = it[0].adminArea
                     viewModel.dataClass.cityName.value = resultName

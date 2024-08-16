@@ -1,70 +1,135 @@
 package com.example.weatherapp.ui.forecast_screen
 
-import android.os.Build
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.weatherapp.domain.model.weather.Forecast
-import com.example.weatherapp.utils.SUCCESS
-import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.util.Calendar
-import java.util.Locale
+import coil.compose.AsyncImage
+import com.example.weatherapp.domain.model.weather.DayUi
+import com.example.weatherapp.ui.theme.SearchBackground
 
 @Composable
 fun ForecastScreen(
-    modifier: Modifier = Modifier, navController: NavController, forecast: Forecast
+    modifier: Modifier = Modifier, navController: NavController, days: List<DayUi>
 ) {
-    LaunchedEffect(Unit) {
-        repeat(forecast.forecastday.size) { index ->
-            val dayName = getDayOfWeek(forecast.forecastday[index].date).lowercase()
-                .replaceFirstChar { it.uppercase() }
-            Log.d(
-                SUCCESS, "ForecastScreen: $dayName"
-            )
-        }
-    }
 
     Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier.padding(horizontal = 15.dp),
+        horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top
     ) {
 
-
-    }
-
-}
-
-private fun getDayOfWeek(dateString: String): String {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-        val date = LocalDate.parse(dateString, formatter)
-        date.dayOfWeek.name.lowercase(Locale.getDefault()).replaceFirstChar { it.uppercase() }
-    } else {
-        val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val date = formatter.parse(dateString)
-        if (date != null) {
-            val calendar = Calendar.getInstance()
-            calendar.time = date
-            when (calendar.get(Calendar.DAY_OF_WEEK)) {
-                Calendar.SUNDAY -> "Sunday"
-                Calendar.MONDAY -> "Monday"
-                Calendar.TUESDAY -> "Tuesday"
-                Calendar.WEDNESDAY -> "Wednesday"
-                Calendar.THURSDAY -> "Thursday"
-                Calendar.FRIDAY -> "Friday"
-                Calendar.SATURDAY -> "Saturday"
-                else -> "Unknown"
-            }
-        } else {
-            "Invalid date"
+        Spacer(modifier = Modifier.padding(top = 100.dp))
+        Text(text = "3-day Forecast", fontWeight = FontWeight.Bold, fontSize = 25.sp)
+        Spacer(modifier = Modifier.padding(top = 30.dp))
+        repeat(days.size) { index ->
+            DayItem(day = days[index])
         }
     }
 }
+
+@Composable
+fun DayItem(modifier: Modifier = Modifier, day: DayUi) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 15.dp)
+            .height(56.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Start
+    ) {
+        AsyncImage(
+            model = day.icon,
+            contentDescription = "",
+            modifier = Modifier
+                .fillMaxHeight()
+                .aspectRatio(1f)
+        )
+        Spacer(modifier = Modifier.padding(5.dp))
+        Column(
+            modifier = Modifier.fillMaxHeight(),
+            verticalArrangement = Arrangement.SpaceBetween,
+            horizontalAlignment = Alignment.Start
+        ) {
+            Text(
+                text = day.dayName,
+                fontSize = 22.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Color.Black
+            )
+            Row() {
+                Text(
+                    text = "${day.condition},",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = SearchBackground
+                )
+                Spacer(modifier = Modifier.padding(5.dp))
+
+                Text(
+                    text = "High: ${day.highTemp},",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = SearchBackground
+                )
+                Spacer(modifier = Modifier.padding(5.dp))
+                Text(
+                    text = "Low: ${day.lowTemp}",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = SearchBackground
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true, showSystemUi = true)
+@Composable
+private fun ForecastScreenPreview() {
+    val sampleDays = listOf(
+        DayUi(
+            dayName = "Monday",
+            lowTemp = "18°C",
+            highTemp = "25°C",
+            icon = "https://example.com/icon1.png",
+            condition = "Sunny"
+        ),
+        DayUi(
+            dayName = "Tuesday",
+            lowTemp = "16°C",
+            highTemp = "23°C",
+            icon = "https://example.com/icon2.png",
+            condition = "Cloudy"
+        ),
+        DayUi(
+            dayName = "Wednesday",
+            lowTemp = "17°C",
+            highTemp = "24°C",
+            icon = "https://example.com/icon3.png",
+            condition = "Rainy"
+        )
+    )
+
+    ForecastScreen(
+        navController = NavController(LocalContext.current),
+        days = sampleDays
+    )
+}
+
