@@ -14,19 +14,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.weatherapp.domain.model.weather.DayUi
 import com.example.weatherapp.ui.theme.SearchBackground
 
 @Composable
 fun ForecastScreen(
-    modifier: Modifier = Modifier, navController: NavController, days: List<DayUi>
+    modifier: Modifier = Modifier, days: List<DayUi>
 ) {
 
     Column(
@@ -128,7 +126,6 @@ private fun ForecastScreenPreview() {
     )
 
     ForecastScreen(
-        navController = NavController(LocalContext.current),
         days = sampleDays
     )
 }

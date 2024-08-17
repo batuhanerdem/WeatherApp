@@ -3,7 +3,6 @@ package com.example.weatherapp.ui
 import Screens
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -30,7 +29,7 @@ fun NavigationHost(navHostController: NavHostController, modifier: Modifier) {
             )
         ) {
             val args = it.toRoute<Screens.ForecastScreen>()
-            ForecastScreen(navController = navHostController, days = args.days)
+            ForecastScreen(days = args.days)
         }
 
     }
