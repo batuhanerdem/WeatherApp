@@ -256,7 +256,7 @@ fun WeatherInfoItem(
 @Composable
 fun ButtonArea(modifier: Modifier = Modifier, buttonOnClick: () -> Unit) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 25.dp),
         verticalArrangement = Arrangement.Bottom,
@@ -292,7 +292,7 @@ private fun getLocation(
     locationClient: FusedLocationProviderClient,
     viewModel: HomeScreenViewModel
 ) {
-    if(viewModel.dataClass.cityName.value.isNotEmpty()) return
+    if (viewModel.dataClass.cityName.value.isNotEmpty()) return
     val coder = Geocoder(navController.context, Locale.getDefault())
     locationClient.lastLocation.addOnSuccessListener { location ->
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
