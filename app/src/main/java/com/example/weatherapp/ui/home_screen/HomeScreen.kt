@@ -50,7 +50,6 @@ import com.example.weatherapp.ui.search_component.SearchComponent
 import com.example.weatherapp.ui.theme.Background
 import com.example.weatherapp.ui.theme.SearchBackground
 import com.example.weatherapp.utils.ERROR
-import com.example.weatherapp.utils.SUCCESS
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import java.io.IOException
@@ -296,7 +295,6 @@ private fun getLocation(
     val coder = Geocoder(navController.context, Locale.getDefault())
     locationClient.lastLocation.addOnSuccessListener { location ->
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            Log.d(SUCCESS, "testing: $location ")
             try {// can get crash for some reason
                 coder.getFromLocation(location.latitude, location.longitude, 1) {
                     val resultName = it[0].adminArea

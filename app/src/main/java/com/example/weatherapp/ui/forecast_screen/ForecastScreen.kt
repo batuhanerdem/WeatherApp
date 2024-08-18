@@ -36,9 +36,14 @@ fun ForecastScreen(
         Spacer(modifier = Modifier.padding(top = 100.dp))
         Text(text = "3-day Forecast", fontWeight = FontWeight.Bold, fontSize = 25.sp)
         Spacer(modifier = Modifier.padding(top = 30.dp))
-        repeat(days.size) { index ->
-            DayItem(day = days[index])
-        }
+        DayList(days = days)
+    }
+}
+
+@Composable
+fun DayList(days: List<DayUi>) {
+    repeat(days.size) { index ->
+        DayItem(day = days[index])
     }
 }
 

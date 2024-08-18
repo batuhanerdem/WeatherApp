@@ -17,10 +17,12 @@ class SearchViewModel @Inject constructor(private val cityNameRepository: CityNa
     val dataClass = SearchDataClass()
 
     fun getCity(name: String) {
+        if (name.isEmpty()) return
         dataClass.loadingState.value = true
         cityNameRepository.getCityByName(name).onEach { resource: Resource<City> ->
             dataClass.loadingState.value = false
             resource.message?.let {
+                dataClass.errorState.clear()
                 dataClass.errorState.value = it
                 return@onEach
             }

@@ -1,5 +1,6 @@
 package com.example.weatherapp.ui.search_component
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -29,20 +31,24 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.weatherapp.R
 import com.example.weatherapp.domain.model.City
+import com.example.weatherapp.ui.common.SnackBar
 import com.example.weatherapp.ui.home_screen.HomeScreenViewModel
 import com.example.weatherapp.ui.search_component.city_item.CityItem
 import com.example.weatherapp.ui.theme.Background
 import com.example.weatherapp.ui.theme.SearchBackground
+import com.example.weatherapp.utils.SUCCESS
 
 @Composable
 fun SearchComponent(modifier: Modifier = Modifier) {
     val viewModel: SearchViewModel = hiltViewModel()
-    val mainActivityViewModel: HomeScreenViewModel = hiltViewModel()
+    val homeScreenViewModel: HomeScreenViewModel = hiltViewModel()
     val focusManager = LocalFocusManager.current
 
     val loadingState = viewModel.dataClass.loadingState.collectAsStateWithLifecycle()
     val errorState = viewModel.dataClass.errorState.collectAsStateWithLifecycle()
     val city = viewModel.dataClass.city.collectAsStateWithLifecycle()
+    val snackBarHostState = remember { SnackbarHostState() }
+
 
     var textState by remember { mutableStateOf(TextFieldValue("")) }
 
@@ -50,6 +56,12 @@ fun SearchComponent(modifier: Modifier = Modifier) {
         if (textState.text.isNotEmpty()) return@LaunchedEffect
         viewModel.setCityNull()
     }
+    LaunchedEffect(key1 = errorState.value) {
+//        if (errorState.value == "") return@LaunchedEffect
+        Log.d(SUCCESS, "launched effect: ${errorState.value} ")
+        snackBarHostState.showSnackbar(errorState.value)
+    }
+
 
     Column(
         modifier = modifier
@@ -97,14 +109,17 @@ fun SearchComponent(modifier: Modifier = Modifier) {
             CityItem(city = it, modifier = Modifier
                 .padding(top = 20.dp)
                 .clickable {
-                    mainActivityViewModel.dataClass.cityName.value = it.name
+                    homeScreenViewModel.dataClass.cityName.value = it.name
                     viewModel.setCityNull()
                     textState = TextFieldValue("")
                     focusManager.clearFocus()
                 })
         }
     }
-
+    SnackBar(
+        snackBarHostState = snackBarHostState,
+        text = errorState.value,
+    )
 
 }
 

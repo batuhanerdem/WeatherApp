@@ -19,6 +19,8 @@ class CityNameRepositoryImpl @Inject constructor(private val service: CityNameSe
             val city = list.body()!![0].toCity()
             emit(Resource.Success(city))
 
+        } catch (e: IndexOutOfBoundsException) {
+            emit(Resource.Error("Can't find the city"))
         } catch (e: Exception) {
             emit(Resource.Error(e.localizedMessage))
         }
