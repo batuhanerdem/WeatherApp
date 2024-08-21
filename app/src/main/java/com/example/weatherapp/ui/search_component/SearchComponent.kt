@@ -116,7 +116,6 @@ fun SearchComponent(modifier: Modifier = Modifier) {
     }
     SnackBar(
         snackBarHostState = snackBarHostState,
-        text = errorState.value,
     )
 
 }

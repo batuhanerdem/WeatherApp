@@ -140,7 +140,6 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavController) {
         SearchComponent()
         SnackBar(
             snackBarHostState = snackBarHostState,
-            text = errorState.value,
             modifier = Modifier.align(Alignment.BottomCenter)
         )
     }
