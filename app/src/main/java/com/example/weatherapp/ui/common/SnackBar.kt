@@ -40,7 +40,7 @@ fun SnackBar(
                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 20.dp),
                 text = text,
                 color = Color.White,
-                fontSize = 20.sp,
+                fontSize = 16.sp,
                 fontWeight = FontWeight.Medium,
                 textAlign = TextAlign.Start
             )
