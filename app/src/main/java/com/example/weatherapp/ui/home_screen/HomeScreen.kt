@@ -51,7 +51,11 @@ import com.example.weatherapp.ui.theme.Background
 import com.example.weatherapp.ui.theme.SearchBackground
 import com.example.weatherapp.utils.ERROR
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.Priority
+import com.google.android.gms.location.SettingsClient
 import java.io.IOException
 import java.util.Locale
 
@@ -73,10 +77,28 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavController) {
         rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestMultiplePermissions()) { result ->
             if (result[ACCESS_FINE_LOCATION] == true && result[ACCESS_COARSE_LOCATION] == true) {
                 getLocation(navController, locationClient, viewModel)
+            } else {
+                viewModel.dataClass.errorState.value = "Location permission is required"
             }
         }
 
+    fun checkLocationSettings() {
+        val locationRequest =
+            LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000).build()
+        val locationSettingsRequest =
+            LocationSettingsRequest.Builder().addLocationRequest(locationRequest).build()
+        val settingsClient: SettingsClient =
+            LocationServices.getSettingsClient(navController.context)
+
+        settingsClient.checkLocationSettings(locationSettingsRequest)
+            .addOnFailureListener { e ->
+                viewModel.dataClass.errorState.value = "Location settings are not enabled"
+            }
+    }
+
+
     LaunchedEffect(Unit) {
+        checkLocationSettings()
         launcher.launch(
             arrayOf(
                 ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION
@@ -87,7 +109,7 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavController) {
         viewModel.getWeather()
     }
     LaunchedEffect(key1 = errorState.value) {
-        if (errorState.value == "") return@LaunchedEffect
+        if (errorState.value.isEmpty()) return@LaunchedEffect
         snackBarHostState.showSnackbar(errorState.value)
     }
 
@@ -176,7 +198,7 @@ fun CityWeatherInfo(
 
 @Composable
 fun WeatherDetails(modifier: Modifier = Modifier, weatherState: WeatherCurrent) {
-    Column(modifier = Modifier) {
+    Column(modifier = modifier) {
         WeatherInfoItem(
             resId = R.drawable.ic_wind,
             staticString = "Wind",
@@ -255,7 +277,7 @@ fun ButtonArea(modifier: Modifier = Modifier, buttonOnClick: () -> Unit) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = 25.dp),
+            .padding(horizontal = 25.dp, vertical = 20.dp),
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -283,7 +305,7 @@ fun ButtonArea(modifier: Modifier = Modifier, buttonOnClick: () -> Unit) {
     }
 }
 
-@SuppressLint("MissingPermission")
+@SuppressLint("MissingPermission") // its okay since we only use this after permission is granted
 private fun getLocation(
     navController: NavController,
     locationClient: FusedLocationProviderClient,
