@@ -295,7 +295,7 @@ fun ButtonArea(modifier: Modifier = Modifier, buttonOnClick: () -> Unit) {
             shape = RoundedCornerShape(15.dp)
         ) {
             Text(
-                text = "5-Day Forecast",
+                text = "3-Day Forecast",
                 fontWeight = FontWeight.SemiBold,
                 fontSize = TextUnit(17f, TextUnitType.Sp),
                 color = Color.Black,
