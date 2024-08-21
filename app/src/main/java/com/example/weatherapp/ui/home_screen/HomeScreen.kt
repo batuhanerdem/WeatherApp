@@ -73,8 +73,6 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavController) {
         rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestMultiplePermissions()) { result ->
             if (result[ACCESS_FINE_LOCATION] == true && result[ACCESS_COARSE_LOCATION] == true) {
                 getLocation(navController, locationClient, viewModel)
-            } else {
-                //im not sure what to do
             }
         }
 
