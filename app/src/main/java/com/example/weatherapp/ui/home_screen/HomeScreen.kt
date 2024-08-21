@@ -98,12 +98,12 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavController) {
 
 
     LaunchedEffect(Unit) {
-        checkLocationSettings()
         launcher.launch(
             arrayOf(
                 ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION
             )
         )
+        checkLocationSettings()
     }
     LaunchedEffect(key1 = cityNameState.value) {
         viewModel.getWeather()
