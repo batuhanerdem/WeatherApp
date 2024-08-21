@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,8 +54,7 @@ fun DayItem(modifier: Modifier = Modifier, day: DayUi) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 15.dp)
-            .height(56.dp),
+            .heightIn(min = 56.dp, max = 90.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
@@ -61,13 +62,13 @@ fun DayItem(modifier: Modifier = Modifier, day: DayUi) {
             model = day.icon,
             contentDescription = "",
             modifier = Modifier
-                .fillMaxHeight()
+                .height(56.dp)
                 .aspectRatio(1f)
         )
         Spacer(modifier = Modifier.padding(5.dp))
         Column(
             modifier = Modifier.fillMaxHeight(),
-            verticalArrangement = Arrangement.SpaceBetween,
+            verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.Start
         ) {
             Text(
@@ -78,25 +79,11 @@ fun DayItem(modifier: Modifier = Modifier, day: DayUi) {
             )
             Row() {
                 Text(
-                    text = "${day.condition},",
+                    text = "${day.condition}, High: ${day.highTemp}, Low: ${day.lowTemp}",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
-                    color = SearchBackground
-                )
-                Spacer(modifier = Modifier.padding(5.dp))
-
-                Text(
-                    text = "High: ${day.highTemp},",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = SearchBackground
-                )
-                Spacer(modifier = Modifier.padding(5.dp))
-                Text(
-                    text = "Low: ${day.lowTemp}",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = SearchBackground
+                    color = SearchBackground,
+                    overflow = TextOverflow.Visible
                 )
             }
         }
@@ -111,21 +98,19 @@ private fun ForecastScreenPreview() {
             dayName = "Monday",
             lowTemp = "18°C",
             highTemp = "25°C",
-            icon = "https://example.com/icon1.png",
+            icon = "",
             condition = "Sunny"
-        ),
-        DayUi(
+        ), DayUi(
             dayName = "Tuesday",
             lowTemp = "16°C",
             highTemp = "23°C",
-            icon = "https://example.com/icon2.png",
+            icon = "",
             condition = "Cloudy"
-        ),
-        DayUi(
+        ), DayUi(
             dayName = "Wednesday",
             lowTemp = "17°C",
             highTemp = "24°C",
-            icon = "https://example.com/icon3.png",
+            icon = "",
             condition = "Rainy"
         )
     )
