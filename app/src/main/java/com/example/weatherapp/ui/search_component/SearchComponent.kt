@@ -36,7 +36,6 @@ import com.example.weatherapp.ui.home_screen.HomeScreenViewModel
 import com.example.weatherapp.ui.search_component.city_item.CityItem
 import com.example.weatherapp.ui.theme.Background
 import com.example.weatherapp.ui.theme.SearchBackground
-import com.example.weatherapp.utils.SUCCESS
 
 @Composable
 fun SearchComponent(modifier: Modifier = Modifier) {
@@ -57,8 +56,7 @@ fun SearchComponent(modifier: Modifier = Modifier) {
         viewModel.setCityNull()
     }
     LaunchedEffect(key1 = errorState.value) {
-//        if (errorState.value == "") return@LaunchedEffect
-        Log.d(SUCCESS, "launched effect: ${errorState.value} ")
+        if (errorState.value.isEmpty()) return@LaunchedEffect
         snackBarHostState.showSnackbar(errorState.value)
     }
 
