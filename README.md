@@ -12,6 +12,7 @@ width="250" hspace="10" vspace="10">
 - Coroutines & Flow
 - Hilt for Dependency Injection
 - Navigation Component
+- Custom Navtype Genarator: [Here](https://github.com/batuhanerdem/custom-navtype-generator)
 - Retrofit
 - Google Services Location, Geocoder
 
