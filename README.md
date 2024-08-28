@@ -1,4 +1,4 @@
-<h1 align="center" id="title">Cumhuriyet Spor Salonu</h1>
+<h1 align="center" id="title">Weather App</h1>
 
 <img src="https://github.com/batuhanerdem/WeatherApp/blob/main/screenshots/logo.png" align="left"
 width="250" hspace="10" vspace="10">
