@@ -4,9 +4,7 @@ import Screens
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.annotation.SuppressLint
-import android.location.Geocoder
-import android.os.Build
-import android.util.Log
+import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -32,7 +30,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
@@ -46,23 +43,14 @@ import com.example.weatherapp.R
 import com.example.weatherapp.domain.model.weather.WeatherCurrent
 import com.example.weatherapp.ui.common.DotFadingLoading
 import com.example.weatherapp.ui.common.SnackBar
+import com.example.weatherapp.ui.manager.LocationManager
 import com.example.weatherapp.ui.search_component.SearchComponent
 import com.example.weatherapp.ui.theme.Background
 import com.example.weatherapp.ui.theme.SearchBackground
-import com.example.weatherapp.utils.ERROR
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationRequest
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.LocationSettingsRequest
-import com.google.android.gms.location.Priority
-import com.google.android.gms.location.SettingsClient
-import java.io.IOException
-import java.util.Locale
 
 @SuppressLint("MissingPermission")
 @Composable
 fun HomeScreen(modifier: Modifier = Modifier, navController: NavController) {
-    val locationClient = LocationServices.getFusedLocationProviderClient(LocalContext.current)
 
     val viewModel: HomeScreenViewModel = hiltViewModel()
 
@@ -73,38 +61,41 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavController) {
     val forecastState = viewModel.dataClass.forecasts.collectAsStateWithLifecycle()
     val snackBarHostState = remember { SnackbarHostState() }
 
-    val launcher =
-        rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestMultiplePermissions()) { result ->
-            if (result[ACCESS_FINE_LOCATION] == true && result[ACCESS_COARSE_LOCATION] == true) {
-                getLocation(navController, locationClient, viewModel)
+    lateinit var permissionLauncher: ManagedActivityResultLauncher<Array<String>, Map<String, Boolean>>
+
+    fun requestLocation() {
+        LocationManager.getLocation(
+            askForPermissionCallback = {
+                permissionLauncher.launch(arrayOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION))
+            },
+            successCallback = { addresses ->
+                viewModel.dataClass.cityName.value = addresses[0].adminArea
+            },
+            errorCallback = { e ->
+                viewModel.dataClass.errorState.value = e.localizedMessage ?: "Unknown error"
+            },
+            context = navController.context
+        )
+    }
+
+    /* ---------- 2. now create the launcher and assign it ---------- */
+    permissionLauncher =
+        rememberLauncherForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { grants ->
+            val granted = grants[ACCESS_FINE_LOCATION] == true &&
+                    grants[ACCESS_COARSE_LOCATION] == true
+            if (granted) {
+                requestLocation()          // retry after permission granted
             } else {
                 viewModel.dataClass.errorState.value = "Location permission is required"
             }
         }
 
-    fun checkLocationSettings() {
-        val locationRequest =
-            LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000).build()
-        val locationSettingsRequest =
-            LocationSettingsRequest.Builder().addLocationRequest(locationRequest).build()
-        val settingsClient: SettingsClient =
-            LocationServices.getSettingsClient(navController.context)
-
-        settingsClient.checkLocationSettings(locationSettingsRequest)
-            .addOnFailureListener { e ->
-                viewModel.dataClass.errorState.value = "Location settings are not enabled"
-            }
-    }
-
-
     LaunchedEffect(Unit) {
-        launcher.launch(
-            arrayOf(
-                ACCESS_COARSE_LOCATION, ACCESS_FINE_LOCATION
-            )
-        )
-        checkLocationSettings()
+        requestLocation()
     }
+
     LaunchedEffect(key1 = cityNameState.value) {
         viewModel.getWeather()
     }
@@ -139,8 +130,7 @@ fun HomeScreen(modifier: Modifier = Modifier, navController: NavController) {
         )
         SearchComponent()
         SnackBar(
-            snackBarHostState = snackBarHostState,
-            modifier = Modifier.align(Alignment.BottomCenter)
+            snackBarHostState = snackBarHostState, modifier = Modifier.align(Alignment.BottomCenter)
         )
     }
 
@@ -300,43 +290,6 @@ fun ButtonArea(modifier: Modifier = Modifier, buttonOnClick: () -> Unit) {
                 color = Color.Black,
                 modifier = Modifier.align(Alignment.CenterVertically)
             )
-        }
-    }
-}
-
-@SuppressLint("MissingPermission") // its okay since we only use this after permission is granted
-private fun getLocation(
-    navController: NavController,
-    locationClient: FusedLocationProviderClient,
-    viewModel: HomeScreenViewModel
-) {
-    if (viewModel.dataClass.cityName.value.isNotEmpty()) return
-    val coder = Geocoder(navController.context, Locale.getDefault())
-    locationClient.lastLocation.addOnSuccessListener { location ->
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            try {// can get crash for some reason
-                coder.getFromLocation(location.latitude, location.longitude, 1) {
-                    val resultName = it[0].adminArea
-                    viewModel.dataClass.cityName.value = resultName
-                }
-            } catch (e: Exception) {
-                Log.e(ERROR, "getLocation: ${e.localizedMessage} ")
-            }
-
-        } else {
-            try {
-                val result = coder.getFromLocation(location.latitude, location.longitude, 1)
-                if (result!!.isNotEmpty()) {
-                    val resultName = result[0].adminArea
-                    viewModel.dataClass.cityName.value = resultName
-                } else {
-                    Log.e(ERROR, "No geocoding results found")
-                }
-            } catch (e: IOException) {
-                Log.e(ERROR, "Geocoding failed ${e.localizedMessage}")
-            } catch (e: Exception) {
-                Log.e(ERROR, "getLocation: ${e.localizedMessage}")
-            }
         }
     }
 }
